@@ -1,4 +1,7 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="./popup.css">
+  </head>
   <body style="background-color: #1a1b1f; color: white">
     <p style="font-size: 16;">When this extension is active, you'll see live series scores while viewing a bracket on the NHL Bracket Challenge site.</p>
     <div style="display: flex; flex-direction: row;">
@@ -15,5 +18,19 @@
       <button type="submit">Go to NHL Bracket Challenge</button>
     </form>
     <hr />
+    <script src="../scripts/display_bracket.js" type="module"></script>
+    <div id="live-scores">
+      <h3 id="live-scores-title">Current series scores</h3>
+      <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+        <div>
+          <h5>Western Conference</h5>
+          <div id="western-scores" class="conference-scores"></div>
+        </div>
+        <div>
+          <h5>Eastern Conference</h5>
+          <div id="eastern-scores" class="conference-scores"></div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

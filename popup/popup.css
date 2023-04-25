@@ -1,0 +1,4 @@
+.conference-scores {
+    display: flex;
+    flex-direction: column;
+}
