@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "NHL Bracket Challenge - Series Scores",
+  "description": "Displays series scores directly in the bracket on the NHL Bracket Challenge site.",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup/popup.html",
+  },
+	"content_scripts": [
+		{
+			"js": ["scripts/add_scores.js"],
+			"matches": [
+				"https://bracketchallenge.nhl.com/*"
+			]
+		}
+	]
+}
