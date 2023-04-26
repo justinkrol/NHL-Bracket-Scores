@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "NHL Bracket Challenge - Series Scores",
-  "description": "Displays series scores directly in the bracket on the NHL Bracket Challenge site.",
+  "name": "NHL Playoffs Bracket - Series Scores",
+  "description": "See series scores next to team names on the NHL Bracket Challenge website. Also, see series scores in your browser toolbar.",
   "version": "1.0",
   "action": {
     "default_popup": "popup/popup.html",
