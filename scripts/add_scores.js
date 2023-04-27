@@ -75,6 +75,19 @@ const addScoreBadgesOnPage = (parsedData) => {
     })
 }
 
+const debounceLeading = (callback, delay) => {
+    let timer
+    return (...args) => {
+        if (!timer) {
+            callback.apply(this, args)
+        }
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            timer = undefined
+        }, delay)
+    }
+}
+
 const run = () => {
     fetch(fullPath)
         .then(response => {
@@ -85,6 +98,20 @@ const run = () => {
             addScoreBadgesOnPage(parsedData)
         })
 }
+// This ensures only the first invocation will run (within a 3000ms period)
+// This only applies when navigating within the single-page app. A browser refresh resets this value.
+const debouncedRun = debounceLeading(run, 3000)
 
-// Wait for the full page to be rendered before trying to modify it
-setTimeout(run, 8000)
+const domChangeHandler = (_) => {
+    const matchCardsQuery = `[id*='match_']`
+    const matchCardsPresent = !!document.querySelector(matchCardsQuery)
+    if (!matchCardsPresent) return
+
+    // Avoid any race condition due to re-renders of the matching `match_*` elements
+    setTimeout(() => debouncedRun(), 300)
+}
+
+const pageObserver = new MutationObserver(domChangeHandler)
+
+const root = document.getElementById('root')
+pageObserver.observe(root, { childList: true, subtree: true })
