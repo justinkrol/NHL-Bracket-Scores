@@ -26,26 +26,43 @@ const params = [
 const paramsStr = params.map(pair => `${pair[0]}=${pair[1]}`).join("&")
 const fullPath = `${API_BASE}/${endpoint}?${paramsStr}`
 
+const parseMatchup = (matchup) => {
+    const winsByTeamName = {}
+    matchup.matchupTeams.forEach(matchupTeam => {
+        const teamFullName = matchupTeam.team.name
+        winsByTeamName[teamFullName] = matchupTeam.seriesRecord.wins
+    })
+    return winsByTeamName
+}
+
 const parseData = (data) => {
     console.log(data.rounds[0])
     return data.rounds.map(round => {
         if (!!round.series[0].matchupTeams) {
-            const conferenceScores = {
-                eastern: [],
-                western: [],
-            }
-            round.series.forEach(matchup => {
-                const winsByTeamName = {}
-                matchup.matchupTeams.forEach(matchupTeam => {
-                    const teamFullName = matchupTeam.team.name
-                    winsByTeamName[teamFullName] = matchupTeam.seriesRecord.wins
+            if (round.names.shortName == "SCF") {
+                const conferenceScores = {
+                    finals: [],
+                }
+                round.series.forEach(matchup => {
+                    conferenceScores.finals.push(parseMatchup(matchup))
                 })
-                conferenceScores[matchup.conference.name.toLowerCase()].push(winsByTeamName)
-            })
+                return {
+                    number: round.number,
+                    conferenceScores,
+                }
+            } else {
+                const conferenceScores = {
+                    eastern: [],
+                    western: [],
+                }
+                round.series.forEach(matchup => {
+                    conferenceScores[matchup.conference.name.toLowerCase()].push(parseMatchup(matchup))
+                })
 
-            return {
-                number: round.number,
-                conferenceScores,
+                return {
+                    number: round.number,
+                    conferenceScores,
+                }
             }
         }
         return null
@@ -53,10 +70,16 @@ const parseData = (data) => {
 }
 
 const addSeriesScoresToPage = (seriesScoresByRound) => {
-    console.log(seriesScoresByRound)
-    const currentRoundConferenceScores = seriesScoresByRound.sort((a, b) => {
+    const currentRound = seriesScoresByRound.sort((a, b) => {
         return b.number - a.number
-    })[0].conferenceScores
+    })[0]
+    if (currentRound.number == 4) { // Finals
+        document.getElementById('finals').style.display = 'flex'
+    } else {
+        document.getElementById('conferences').style.display = 'flex'
+    }
+
+    const currentRoundConferenceScores = currentRound.conferenceScores
 
     Object.keys(currentRoundConferenceScores).forEach(conferenceName => {
         const divId = `${conferenceName}-scores`

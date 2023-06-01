@@ -1,4 +1,14 @@
+#conferences {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
 .conference-scores {
     display: flex;
     flex-direction: column;
+}
+
+p {
+    font-size: 14px;
 }
